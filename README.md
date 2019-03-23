@@ -5,7 +5,7 @@ Our approach to the problem is summarised here
 
 
 # 1. Prerequisite and dependencies
-##1.1 Packages
+## 1.1 Packages
 - tqdm
 - pandas
 - numpy
@@ -23,7 +23,7 @@ All these embedding files could be found at this [link](https://www.kaggle.com/d
 
 
 # 2. Model architecture
-##2.1 BiDirectional LSTM
+## 2.1 BiDirectional LSTM
 This script focuses on the embedding rather than model architecture. Inspired by this [script](https://www.kaggle.com/wowfattie/3rd-place)
 
 
@@ -32,7 +32,7 @@ This script focuses on the embedding rather than model architecture. Inspired by
 - Find all edits that are two edits away from the 'correct' word
 - Use stemming, lemmatization, capitalize, lower, uppercase, as well as embedding of the nearest word using a spell checker to get embeddings for all words in
 
-##2.2 EMA_19032019
+## 2.2 EMA_19032019
 Average ensemble of the same network 
 ```
 Embedding(max_features, 600)
@@ -98,7 +98,7 @@ dense_1 (Dense)                 (None, 58)           13050       concatenate_1[0
 ```
 
 
-#3.Model Stacking
+# 3.Model Stacking
 
 We do weighted average of all model out put to have a 58x58 matrix as our input for the lightgbm model
 The input to the model can be found [here](https://www.kaggle.com/dttung2905/ensembling-ndsc)
