@@ -105,3 +105,6 @@ The input to the model can be found [here](https://www.kaggle.com/dttung2905/ens
 
 - StratifiedKfold with  10fold was used to have the same distribution of classes in the fold. This is due to class imbalance from the questios
 - Number of boosting round is set to be at 700. After 700 rounds with learning rate of 0.002 , the error rate starts to increase tremendously 
+
+# 4.Result
+(Coming soon)
