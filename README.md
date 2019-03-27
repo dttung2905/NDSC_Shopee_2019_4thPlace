@@ -107,4 +107,10 @@ The input to the model can be found [here](https://www.kaggle.com/dttung2905/ens
 - Number of boosting round is set to be at 700. After 700 rounds with learning rate of 0.002 , the error rate starts to increase tremendously 
 
 # 4.Result
-(Coming soon)
+| Model               | LB Score |
+|---------------------|----------|
+| BiDirectional LSTM  | 0.758    |
+| EMA_19032019        | 0.76003  |
+| BiGRU-LSTM Fasttext | 0.73718  |
+| Elmo                | 0.70522  |
+| Ensemble            | 0.78267  |
