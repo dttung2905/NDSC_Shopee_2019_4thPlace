@@ -114,3 +114,7 @@ The input to the model can be found [here](https://www.kaggle.com/dttung2905/ens
 | BiGRU-LSTM Fasttext | 0.73718  |
 | Elmo                | 0.70522  |
 | Ensemble            | 0.78267  |
+
+# 5. Potential exploration
+
+- Exploring ensemble system with different methods. Hillclimb is one of the method that was used by the top 1 team [link](https://www.kaggle.com/hhstrand/hillclimb-ensembling)
