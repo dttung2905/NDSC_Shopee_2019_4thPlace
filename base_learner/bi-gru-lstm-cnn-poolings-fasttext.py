@@ -1,4 +1,4 @@
-#Inspired by the script 
+#Inspired by the script
 #https://www.kaggle.com/tunguz/bi-gru-lstm-cnn-poolings-fasttext/comments
 #Version 5: dont have call back
 
@@ -34,8 +34,8 @@ class RocAucEvaluation(Callback):
             y_pred = self.model.predict(self.X_val, verbose=0)
             score = roc_auc_score(self.y_val, y_pred)
             print("\n ROC-AUC - epoch: {:d} - score: {:.6f}".format(epoch+1, score))
-            
-            
+
+
 train = pd.read_csv("../input/ndsc-beginner/train.csv")
 test = pd.read_csv("../input/ndsc-beginner/test.csv")
 embedding_path = "../input/fasttext-crawl-300d-2m/crawl-300d-2M.vec"
@@ -75,8 +75,8 @@ for word, i in word_index.items():
     if i >= max_features: continue
     embedding_vector = embedding_index.get(word)
     if embedding_vector is not None: embedding_matrix[i] = embedding_vector
-    
-    
+
+
 from keras.optimizers import Adam, RMSprop
 from keras.callbacks import EarlyStopping, ModelCheckpoint, LearningRateScheduler
 from keras.layers import GRU, BatchNormalization, Conv1D, MaxPooling1D
@@ -94,17 +94,17 @@ def build_model(lr = 0.0, lr_d = 0.0, units = 0, dr = 0.0):
 
     x = Bidirectional(GRU(units, return_sequences = True))(x1)
     x = Conv1D(int(units/2), kernel_size = 2, padding = "valid", kernel_initializer = "he_uniform")(x)
-    
+
     y = Bidirectional(LSTM(units, return_sequences = True))(x1)
     y = Conv1D(int(units/2), kernel_size = 2, padding = "valid", kernel_initializer = "he_uniform")(y)
-    
+
     avg_pool1 = GlobalAveragePooling1D()(x)
     max_pool1 = GlobalMaxPooling1D()(x)
-    
+
     avg_pool2 = GlobalAveragePooling1D()(y)
     max_pool2 = GlobalMaxPooling1D()(y)
-    
-    
+
+
     x = concatenate([avg_pool1, max_pool1, avg_pool2, max_pool2])
 
     x = Dense(58, activation = "sigmoid")(x)
@@ -122,8 +122,8 @@ def build_model(lr = 0.0, lr_d = 0.0, units = 0, dr = 0.0):
     # serialize weights to HDF5
     model.save_weights("model_num.h5")
     return model
-    
- 
+
+
 model = build_model(lr = 1e-3, lr_d = 0, units = 112, dr = 0.2)
 pred = model.predict(test, batch_size = 1024, verbose = 1)
 oof_pred = model.predict(X_train,batch_size = 1024, verbose = 1)
