@@ -1,6 +1,5 @@
 #Inspired by the script
 #https://www.kaggle.com/tunguz/bi-gru-lstm-cnn-poolings-fasttext/comments
-#Version 5: dont have call back
 
 import time
 start_time = time.time()
@@ -17,32 +16,22 @@ from keras.models import Model, load_model
 from keras import initializers, regularizers, constraints, optimizers, layers, callbacks
 from keras import backend as K
 from keras.engine import InputSpec, Layer
-
+from utils.model import build_model
 import logging
 from sklearn.metrics import roc_auc_score
 from keras.callbacks import Callback
 
-class RocAucEvaluation(Callback):
-    def __init__(self, validation_data=(), interval=1):
-        super(Callback, self).__init__()
-
-        self.interval = interval
-        self.X_val, self.y_val = validation_data
-
-    def on_epoch_end(self, epoch, logs={}):
-        if epoch % self.interval == 0:
-            y_pred = self.model.predict(self.X_val, verbose=0)
-            score = roc_auc_score(self.y_val, y_pred)
-            print("\n ROC-AUC - epoch: {:d} - score: {:.6f}".format(epoch+1, score))
-
-
-train = pd.read_csv("../input/ndsc-beginner/train.csv")
-test = pd.read_csv("../input/ndsc-beginner/test.csv")
-embedding_path = "../input/fasttext-crawl-300d-2m/crawl-300d-2M.vec"
-
+#general setting for model
 embed_size = 300
 max_features = 75720
 max_len = 220
+train_path = "../input/ndsc-beginner/train.csv"
+test_path ="../input/ndsc-beginner/test.csv"
+embedding_path = "../input/fasttext-crawl-300d-2m/crawl-300d-2M.vec"
+
+
+train = pd.read_csv(train_path)
+test = pd.read_csv(test_path)
 
 list_classes = [i for i in range(58)]
 y = train['Category'].values
@@ -86,42 +75,6 @@ check_point = ModelCheckpoint(file_path, monitor = "val_loss", verbose = 1,
                               save_best_only = True, mode = "min")
 
 early_stop = EarlyStopping(monitor = "val_loss", mode = "min", patience = 5)
-
-def build_model(lr = 0.0, lr_d = 0.0, units = 0, dr = 0.0):
-    inp = Input(shape = (max_len,))
-    x = Embedding(max_features, embed_size, weights = [embedding_matrix], trainable = False)(inp)
-    x1 = SpatialDropout1D(dr)(x)
-
-    x = Bidirectional(GRU(units, return_sequences = True))(x1)
-    x = Conv1D(int(units/2), kernel_size = 2, padding = "valid", kernel_initializer = "he_uniform")(x)
-
-    y = Bidirectional(LSTM(units, return_sequences = True))(x1)
-    y = Conv1D(int(units/2), kernel_size = 2, padding = "valid", kernel_initializer = "he_uniform")(y)
-
-    avg_pool1 = GlobalAveragePooling1D()(x)
-    max_pool1 = GlobalMaxPooling1D()(x)
-
-    avg_pool2 = GlobalAveragePooling1D()(y)
-    max_pool2 = GlobalMaxPooling1D()(y)
-
-
-    x = concatenate([avg_pool1, max_pool1, avg_pool2, max_pool2])
-
-    x = Dense(58, activation = "sigmoid")(x)
-    model = Model(inputs = inp, outputs = x)
-    model.compile(loss = "sparse_categorical_crossentropy", optimizer = Adam(lr = lr, decay = lr_d), metrics = ["accuracy"])
-    history = model.fit(X_train, Y_train, batch_size = 256, epochs = 4,
-                        verbose = 1
-                        )
-    model_json = model.to_json()
-
-
-    with open("model_num.json", "w") as json_file:
-        json_file.write(model_json)
-
-    # serialize weights to HDF5
-    model.save_weights("model_num.h5")
-    return model
 
 
 model = build_model(lr = 1e-3, lr_d = 0, units = 112, dr = 0.2)

@@ -52,7 +52,7 @@ print('Start prediction____________')
 model.load_weights('./elmo-model.h5')
 predicts = model.predict(x_test, batch_size=256,verbose = 1)
 oof_pred = model.predict(x_train, batch_size=512,verbose = 1)
-        
+
 print('Done prediction')
 
 np.save('oof_Elmo.np',oof_pred)
